@@ -17,7 +17,7 @@ const styles = {
 class ActorContainer extends Component {
 
     state = {
-        checked : 0
+        checked: 0
     }
 
     HandleChange = (event) => {
@@ -28,11 +28,10 @@ class ActorContainer extends Component {
             checked: actor_id
         });
     }
-    
+
     render() {
         const { classes } = this.props;
         return (
-
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
@@ -51,14 +50,14 @@ class ActorContainer extends Component {
                                 <TableCell >{actor.known_for.join()}</TableCell>
                                 <TableCell >
                                     <label key={actor.id}>
-                                        <input 
-                                            type="radio" 
-                                            checked={this.state.checked == actor.id ? true : false} 
+                                        <input
+                                            type="radio"
+                                            checked={this.state.checked == actor.id ? true : false}
                                             key={actor.id}
-                                            onChange={this.HandleChange} 
+                                            onChange={this.HandleChange}
                                             value={actor.id} />
                                     </label>
-                                
+
                                 </TableCell>
                             </TableRow>
                         ))}

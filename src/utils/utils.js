@@ -1,24 +1,21 @@
 import { API_KEY } from "../constants";
 import _ from "lodash";
+ 
 export const makeApiCallForSearch = (searchInput, apiUrl) => {
     const finalOutputUrl = makesearchApiUrl(searchInput, apiUrl);
     return fetch(finalOutputUrl)
-
 };
+
 export const makeGetApiCall = (apiUrl) => {
     const finalOutputUrl = makeGetApiUrl(apiUrl);
-    console.log(finalOutputUrl)
     return fetch(finalOutputUrl)
-
 };
 
 export const makeApiCallForCast = (apiUrl, personId) => {
     const searchUrl = apiUrl + personId.toString() + "/" + "movie_credits"
     const finalOutputUrl = makeGetApiUrl(searchUrl);
-    console.log(finalOutputUrl);
     return fetch(finalOutputUrl)
 }
-
 
 export const constructUrlWithParams = (baseUrl, params) => {
     return baseUrl + "?" + new URLSearchParams(params);
@@ -57,24 +54,22 @@ export const movieComparator = (movie1, movie2) => {
     return movie1.id === movie2.id
 
 }
-export const movieIntersect = (MovieList1,MovieList2) => {
+export const movieIntersect = (MovieList1, MovieList2) => {
     return MovieList1.filter(a => MovieList2.some(b => movieComparator(a, b)));
 }
 
 export const populateGenres = (resultsList, genreIdToNameMapping) => {
-
     const modifiedResultsList =
         _.map(resultsList, (result) => {
             const genre_ids = result.genre_ids;
             const genre_names = _.map(genre_ids, (genre_id) => {
                 return genreIdToNameMapping[genre_id]
             }
-            )
+        )
             result.genre_names = genre_names
             return result
         }
         )
-    console.log(genreIdToNameMapping)
     return modifiedResultsList
 }
 
@@ -90,7 +85,6 @@ export const populateKnownForMovies = (ActorList) => {
                 return actor
             }
         )
-    console.log(modifiedActorList);
     return modifiedActorList
 }
 

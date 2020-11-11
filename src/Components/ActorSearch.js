@@ -1,44 +1,42 @@
 import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { makeApiCallForSearch,populateKnownForMovies } from "../utils/utils"
-import { GENRE_URL } from "../constants"
-import _ from "lodash";
+import { makeApiCallForSearch, populateKnownForMovies } from "../utils/utils"
+
 
 
 class ActorSearch extends Component {
     state = {
         searchVal: ""
-        
+
     }
     handleOnChange = event => {
-        console.log(event.target.value);
         this.setState({ searchVal: event.target.value });
     };
     handleSubmit = () => {
         if (this.state.searchVal != "") {
             const url = this.props.url
-            console.log(this.state.searchVal);
             const searchPromise = makeApiCallForSearch(this.state.searchVal, url)
-            searchPromise.then(res => res.json())
-                .then(json => {
-                    console.log(json.results);
+            searchPromise.then(res => res.json()).catch(e=> {
+                console.log("error occured while trying to fetch actors");
+                console.log(e);
+            }).then(json => {
                     const finalResults = populateKnownForMovies(json.results)
-                    
                     this.props.handleResults(finalResults)
                 })
                 .catch(
                     error => {
+                        console.log("error occured while trying to populate movies")
                         console.log(error)
                         this.props.handleResults([])
                     });
         }
-        else{
+        else {
             this.props.handleResults([])
-        }   
+        }
     }
     render() {
-        
+
         return (
             <div>
                 <TextField

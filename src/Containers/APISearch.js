@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { makeApiCallForSearch, makeGetApiCall,populateGenres } from "../utils/utils"
+import { makeApiCallForSearch, makeGetApiCall, populateGenres } from "../utils/utils"
 import { GENRE_URL } from "../constants"
 import _ from "lodash";
 
@@ -20,7 +20,7 @@ class APISearch extends Component {
             json => {
                 console.log(json);
                 return json["genres"]
-            
+
             }).then(
                 genres => {
                     const genreIdToNameMap = _.fromPairs(genres.map(genre => [genre.id, genre.name]));
@@ -53,12 +53,12 @@ class APISearch extends Component {
                         this.props.handleResults([])
                     });
         }
-        else{
+        else {
             this.props.handleResults([])
-        }   
+        }
     }
     render() {
-        
+
         return (
             <div>
                 <TextField

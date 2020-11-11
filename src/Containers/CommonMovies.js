@@ -4,9 +4,7 @@ import { ACTOR_SEARCH_URL, MOVIE_CREDITS_URL } from '../constants'
 import ActorSearchDisplay from "./ActorSearchDisplay";
 import Button from '@material-ui/core/Button';
 import { makeApiCallForCast, movieIntersect } from "../utils/utils";
-import _ from "lodash";
 import MovieCardsContainer from "./MovieCardsContainer";
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 class SearchMovies extends Component {
@@ -38,18 +36,22 @@ class SearchMovies extends Component {
 
     handleSubmit = () => {
         const Cast = makeApiCallForCast(MOVIE_CREDITS_URL, this.state.actor_1_selected)
-        Cast.then(res => res.json())
-            .then(json => {
+        Cast.then(res => res.json()).catch(
+            e => 
+            {
+                console.log("error occured while fetching movies casted for actor 1");    
+                console.log(e);
+            }
+        ).then(json => {
                 const cast1 = json.cast
                 makeApiCallForCast(MOVIE_CREDITS_URL, this.state.actor_2_selected).
                     then(
                         res => res.json()
                     ).catch(
                         e => {
+                            console.log("error occured while fetching movies casted for actor 2");    
                             console.log(e);
-                            return e
                         }
-
                     )
                     .then(json => {
                         const cast2 = json.cast
@@ -58,8 +60,8 @@ class SearchMovies extends Component {
                     }
                     ).catch(
                         e => {
+                            console.log("error occured while finding interesecting movies");
                             console.log(e)
-                            return []
                         }
                     )
             }
@@ -75,21 +77,25 @@ class SearchMovies extends Component {
     render() {
         return (
             <div>
+                <div style={{ textAlign: "center", marginBottom: 0 }}>
+                    <h1 > Common Movies </h1>
+                    <p> Search for actors and select actors with radio buttons , click on common movies to fetch all the common movies that these actors were a part of</p>
+                </div>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <LongMenu selected="Common Movies" />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                    <ActorSearchDisplay key={0} url={ACTOR_SEARCH_URL} handleResults={this.handleActor1Results} actors={this.state.actor_1_search_results} handleSelected={this.handleActors1Selected} />
+                        <ActorSearchDisplay id = {1} key={0} url={ACTOR_SEARCH_URL} handleResults={this.handleActor1Results} actors={this.state.actor_1_search_results} handleSelected={this.handleActors1Selected} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                    <ActorSearchDisplay key={1} url={ACTOR_SEARCH_URL} handleResults={this.handleActor2Results} actors={this.state.actor_2_search_results} handleSelected={this.handleActors2Selected} />
+                        <ActorSearchDisplay id = {2} key={1} url={ACTOR_SEARCH_URL} handleResults={this.handleActor2Results} actors={this.state.actor_2_search_results} handleSelected={this.handleActors2Selected} />
                     </Grid>
-                    <Grid item xs={12} justify="center" direction="row">
-                    <Button variant="contained" color="primary" onClick={this.handleSubmit}>
-                        Search for Common Movies
+                    <Grid item xs={12} >
+                        <Button variant="contained" color="primary" onClick={this.handleSubmit}>
+                            Search for Common Movies
                     </Button>
-                    <MovieCardsContainer movies={this.state.common_movies} include_genre={false} />
+                        <MovieCardsContainer movies={this.state.common_movies} include_genre={false} />
                     </Grid>
                 </Grid>
             </div>

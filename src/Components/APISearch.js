@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { makeApiCallForSearch, makeGetApiCall,populateGenres } from "../utils/utils"
+import { makeApiCallForSearch, makeGetApiCall, populateGenres } from "../utils/utils"
 import { GENRE_URL } from "../constants"
 import _ from "lodash";
 
@@ -16,18 +16,28 @@ class APISearch extends Component {
         const genrePromise = makeGetApiCall(GENRE_URL);
         genrePromise.then(
             res => res.json()
-        ).then(
-            json => {
-                console.log(json);
-                return json["genres"]
-            
-            }).then(
+        ).catch(
+            e => {
+                console.log("error occured while fetching genres")
+                console.log(e)
+            }
+        ).
+            then(
+                json => {
+                    return json["genres"]
+
+                }).catch(e => {
+                    console.log("error occured while fetching genres key from json response");
+                    console.log(e)
+                })
+            .then(
                 genres => {
                     const genreIdToNameMap = _.fromPairs(genres.map(genre => [genre.id, genre.name]));
                     this.setState({ genreMap: genreIdToNameMap })
                 }
             ).catch(
                 e => {
+                    console.log("error occured while fetching genre names");
                     console.log(e);
                 }
             )
@@ -37,28 +47,31 @@ class APISearch extends Component {
         this.setState({ searchVal: event.target.value });
     };
     handleSubmit = () => {
+        const { url, handleResults } = this.props
         if (this.state.searchVal != "") {
-            const url = this.props.url
             console.log(this.state.searchVal);
             const searchPromise = makeApiCallForSearch(this.state.searchVal, url)
-            searchPromise.then(res => res.json())
-                .then(json => {
-                    console.log(json.results);
-                    const finalResults = populateGenres(json.results, this.state.genreMap)
-                    this.props.handleResults(finalResults)
-                })
+            searchPromise.then(res => res.json()).catch(
+                e => {
+                    console.log("error occured in searching movies API");
+                    console.log(e);
+                }
+            ).then(json => {
+                console.log(json.results);
+                const finalResults = populateGenres(json.results, this.state.genreMap)
+                handleResults(finalResults)
+            })
                 .catch(
                     error => {
                         console.log(error)
-                        this.props.handleResults([])
+                        handleResults([])
                     });
         }
-        else{
-            this.props.handleResults([])
-        }   
+        else {
+            handleResults([])
+        }
     }
     render() {
-        
         return (
             <div>
                 <TextField
