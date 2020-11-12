@@ -66,7 +66,7 @@ export const populateGenres = (resultsList, genreIdToNameMapping) => {
                 return genreIdToNameMapping[genre_id]
             }
         )
-            result.genre_names = genre_names
+            result.genre_names = _.filter(genre_names,(name) => name != undefined );
             return result
         }
         )
@@ -81,7 +81,7 @@ export const populateKnownForMovies = (ActorList) => {
                 const modified_know_for_movies = _.map(know_for_movies, (movie) => {
                     return movie.original_title
                 })
-                actor["known_for"] = modified_know_for_movies
+                actor["known_for"] = _.filter(modified_know_for_movies,(name) => name != undefined );
                 return actor
             }
         )
